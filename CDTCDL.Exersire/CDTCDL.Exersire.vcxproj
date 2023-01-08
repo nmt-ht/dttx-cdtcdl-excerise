@@ -24,7 +24,7 @@
     <ProjectGuid>{e2f467e1-f297-456e-b561-67798afcc738}</ProjectGuid>
     <RootNamespace>CDTCDLExersire</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>CDTCDL.Exersire1</ProjectName>
+    <ProjectName>CDTCDL.Exersire</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
