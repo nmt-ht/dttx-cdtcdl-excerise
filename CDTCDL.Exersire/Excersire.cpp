@@ -212,6 +212,7 @@ void Excersire5() {
 	int a = ('1' > 1) + (1.0 < 1); //1
 	double b = 10.3 + '2'; //2
 	int c = (int)1.5 + 0.5; //3
+
 	cout << "Gia tri cua a: " << a << endl;
 	cout << "Gia tri cua b: " << b << endl;
 	cout << "Gia tri cua c: " << c << endl;
