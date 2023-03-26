@@ -13,6 +13,16 @@ struct Complex {
 	double Im; //phần ảo - imaginary
 };
 
+double getReal(Complex c)
+{
+	return c.Re;
+}
+
+double getImaginary(Complex c)
+{
+	return c.Im;
+}
+
 // Lấy liên hợp
 Complex Conjg(Complex a)
 {
@@ -23,9 +33,10 @@ Complex Conjg(Complex a)
 // Lấy đối
 Complex Neg(Complex a)
 {
-	a.Re = -a.Re;
-	a.Im = -a.Im;
-	return a;
+	Complex r;
+	r.Re = -a.Re;
+	r.Im = -a.Im;
+	return r;
 }
 
 Complex Add(Complex a, Complex b)
@@ -77,6 +88,14 @@ Complex SquareRoot(Complex a)
 	else
 		c.Re = sqrt((a.Re - delta) / 2);
 	c.Im = a.Im / c.Re / 2;
+	return c;
+}
+
+Complex Square(Complex a)
+{
+	Complex c;
+	c.Re = a.Re - a.Im * a.Im;
+	c.Im = 2 * a.Re * a.Im;
 	return c;
 }
 
