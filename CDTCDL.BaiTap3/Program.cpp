@@ -38,9 +38,12 @@ PQ* newNode(int d, int p)
 	return temp;
 }
 
-// Removes the element with the highest priority form the list
+// Removes the element with the highest priority from the list
 void RemoveMax(PQ** head)
 {
+	if (isEmpty(*head))
+		return;
+
 	PQ* temp = (*head);
 	(*head) = (*head)->next;
 	free(temp);
@@ -85,7 +88,7 @@ void printPQ(PQ* head) {
 	//Node current will point to head  
 	PQ* current = head;
 	if (head == NULL) {
-		printf("List is empty \n");
+		cout << "List is empty" << endl;
 		return;
 	}
 	while (current != NULL) {
