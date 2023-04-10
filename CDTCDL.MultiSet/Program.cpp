@@ -1,5 +1,4 @@
 #include <iostream>
-
 using namespace std;
 
 struct myBag {
@@ -10,6 +9,14 @@ struct myBag {
 
 myBag* initBag() {
 	return {};
+}
+
+bool isEmptyBag(myBag* bag) {
+	if (bag == NULL)
+	{
+		return true;
+	}
+	return false;
 }
 
 myBag* newBag(int value, int seq) {
@@ -27,7 +34,7 @@ void insert(myBag** latestBag, int value)
 {
 	if (*latestBag == NULL)
 	{
-		*latestBag = newBag(value, 0);
+		*latestBag = newBag(value, 1);
 	}
 	else
 	{
@@ -37,20 +44,83 @@ void insert(myBag** latestBag, int value)
 		}
 		else
 		{
-			myBag* tmp = newBag(value, 0);
+			myBag* tmp = newBag(value, 1);
 			(*latestBag)->next = tmp;
 		}
 	}
 }
 
+void deleteItem(myBag** latestBag, int value) {
+	if (isEmptyBag(*latestBag)) return;
+
+	myBag* current = *latestBag, * index = NULL;
+	bool isDeleted = false;
+
+	while (current != NULL) {
+		//Node index will point to node next to current  
+		index = current->next;
+
+		while (index != NULL) {
+			if (current->value == value) {
+				isDeleted = true;
+				if (current->seq > 1)
+				{
+					current->seq = current->seq - 1;
+					*latestBag = current;
+					break;
+				}
+				else
+				{
+					myBag* temp = (*latestBag);
+					(*latestBag) = (*latestBag)->next;
+					free(temp);
+					break;
+				}
+			}
+
+			index = index->next;
+		}
+		current = current->next;
+	}
+
+	if (!isDeleted)
+		cout << "\nBag does not contain value: " << value << ". Cannot delete." << endl;
+}
+
+void deleteAll(myBag** bag) {
+	*bag = {};
+}
+
+int countItem(myBag** bag, int value) {
+	if (isEmptyBag(*bag)) return 0;
+
+	myBag* current = *bag, * index = NULL;
+
+	while (current != NULL) {
+		//Node index will point to node next to current  
+		index = current->next;
+
+		while (index != NULL) {
+			if (current->value == value) {
+				return current->seq;
+			}
+
+			index = index->next;
+		}
+		current = current->next;
+	}
+
+	return 0;
+}
+
 void printBag(myBag* bag) {
 	//Node current will point to head  
 	myBag* current = bag;
-	if (bag == NULL) {
-		cout << "Bag is empty" << endl;
+	if (isEmptyBag(bag)) {
+		cout << "Bag is empty." << endl;
 		return;
 	}
-
+	
 	cout << "Current bag:" << endl;
 
 	while (current != NULL) {
@@ -71,57 +141,57 @@ int main()
 		cout << "\n---------------------" << endl;
 		cout << "Multiset/Bag Example" << endl;
 		cout << "\n---------------------" << endl;
-		cout << "0.Init Multiset/Bag" << endl;
-		cout << "1.Insert Number into the Multiset/Bag" << endl;
-		cout << "2.Delete Element from the Multiset/Bag" << endl;
-		cout << "3.Find Element in a Multiset/Bag" << endl;
-		cout << "4.Count Elements with a specific key" << endl;
-		cout << "5.Size of the Multiset/Bag" << endl;
-		cout << "6.Display Multiset/Bag" << endl;
-		cout << "7.First Element of the Multiset/Bag" << endl;
-		cout << "8.Exit" << endl;
+		cout << "1.Init Multiset/Bag" << endl;
+		cout << "2.Insert Number into the Multiset/Bag" << endl;
+		cout << "3.Delete Element from the Multiset/Bag" << endl;
+		cout << "4.Delete all element from the Multiset/Bag" << endl;
+		cout << "5.Count Elements with a specific key" << endl;
+		cout << "6.Check EQUAL of both Multiset/Bag" << endl;
+		cout << "7.Check sub Mutiset/Bag" << endl;
+		cout << "8.UNION Mutiset/Bag" << endl;
+		cout << "9.Exit" << endl;
 		cout << "Enter your Choice: ";
 		cin >> choice;
 
 		switch (choice)
 		{
-		case 0:
+		case 1:
 			bag = initBag();
 			cout << "Initizised bag.";
 			break;
-		case 1:
+		case 2:
 			cout << "Enter value to be inserted: ";
 			cin >> item;
 			insert(&bag, item);
 			printBag(bag);
 			break;
-		case 2:
+		case 3:
 			cout << "Enter value to be deleted: ";
 			cin >> item;
-
-			break;
-		case 3:
-			cout << "Enter element to find ";
-			cin >> item;
-
+			deleteItem(&bag, item);
+			printBag(bag);
 			break;
 		case 4:
-			cout << "Enter element to be counted: ";
-			cin >> item;
-			//cout << item << " appears " << ms.count(item) << " times." << endl;
+			cout << "Delete all bag.";
+			deleteAll(&bag);
+			printBag(bag);
 			break;
 		case 5:
-			//cout << "Size of the Multiset: " << ms.size() << endl;
+			cout << "Enter element to be counted: ";
+			cin >> item;
+			cout << item << " appears " << countItem(&bag, item) << " times." << endl;
 			break;
 		case 6:
+			break;
+		case 7:
 			cout << "Elements of the Multiset:  ";
 
 			cout << endl;
 			break;
-		case 7:
+		case 8:
 
 			break;
-		case 8:
+		case 9:
 			exit(1);
 			break;
 		default:
