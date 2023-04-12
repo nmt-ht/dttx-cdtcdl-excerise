@@ -30,23 +30,32 @@ myBag* newBag(int value, int seq) {
 }
 
 // Function to push according to priority
-void insert(myBag** latestBag, int value, int seqValue = 0)
+void insert(myBag** bag, int value, int seqValue = 1)
 {
-	if (*latestBag == NULL)
+	myBag* start = *bag;
+
+	if (*bag == NULL)
 	{
-		*latestBag = newBag(value, 1);
+		*bag = newBag(value, seqValue);
 	}
 	else
 	{
-		if ((*latestBag)->value == value)
+		//create new bag
+		myBag* temp = newBag(value, seqValue);
+
+		while (start->next != NULL) 
 		{
-			(*latestBag)->seq = seqValue == 0 ? (*latestBag)->seq + 1 : (*latestBag)->seq + seqValue;
+			if (start->next->value == value)
+			{
+				start->next->seq = start->next->seq + seqValue;
+				free(temp);
+				return;
+			}
+			start = start->next;
 		}
-		else
-		{
-			myBag* tmp = newBag(value, seqValue == 0 ? 1 : seqValue);
-			(*latestBag)->next = tmp;
-		}
+
+		temp->next = start->next;
+		start->next = temp;
 	}
 }
 
@@ -57,7 +66,6 @@ void deleteItem(myBag** latestBag, int value) {
 	bool isDeleted = false;
 
 	while (current != NULL) {
-		//Node index will point to node next to current  
 		index = current->next;
 
 		while (index != NULL) {
@@ -127,8 +135,8 @@ myBag* insertBagByElements(int elements) {
 	myBag* bag = initBag();
 
 	int item = 0;
-	for (int i = 0; i < elements; i++) {
-		cout << "Enter value of element " << i+1 << ":";
+	for (int i = 1; i <= elements; i++) {
+		cout << "Enter value of element " << i << ":";
 		cin >> item;
 		insert(&bag, item);
 	}
@@ -137,7 +145,6 @@ myBag* insertBagByElements(int elements) {
 }
 
 void sortBag(myBag* bag) {
-	//Node current will point to head  
 	myBag* current = bag, * index = NULL;
 	int temp_value;
 	int temp_seq;
@@ -147,11 +154,9 @@ void sortBag(myBag* bag) {
 	}
 	else {
 		while (current != NULL) {
-			//Node index will point to node next to current  
 			index = current->next;
 
 			while (index != NULL) {
-				//If current node's data is greater than index's node data, swap the data between them  
 				if (current->value > index->value) {
 					temp_value = current->value;
 					temp_seq = current->seq;
@@ -194,29 +199,30 @@ void compareBags(myBag* bag1, myBag* bag2) {
 	cout << "RESULT: BAG 1 is equal BAG 2";
 }
 
-void checkSubBag(myBag* bag1, myBag* bag2) {
+void checkSubBag(myBag* bag1, myBag* bag2, int elOfBag1, int elOfBag2) {
+	int i = 0;
+	int j = 0;
 	while (bag1 != NULL) {
 		while (bag2 != NULL)
 		{
-			if (bag1->value != bag2->value) {
-				cout << "RESULT: BAG 1 is not equal BAG 2";
-				return;
-			}
-
-			if (bag1->value == bag2->value && bag1->seq != bag2->seq)
+			if (bag1->value == bag2->value && bag1->seq <= bag2->seq)
 			{
-				cout << "RESULT: BAG 1 is not equal BAG 2";
-				return;
+				break;
 			}
-
-			break;
+			j++;
+			bag2 = bag2->next;
 		}
 
-		bag2 = bag2->next;
+		if (j == elOfBag2)
+		{
+			cout << "RESULT: BAG 1 is not subset of BAG 2";
+			return;
+		}
+		i++;
 		bag1 = bag1->next;
 	}
 
-	cout << "RESULT: BAG 1 is equal BAG 2";
+	cout << "RESULT: BAG 1 is subset of BAG 2";
 }
 
 void unionAllBag(myBag* bag1, myBag* bag2) {
@@ -266,19 +272,30 @@ void multipleBagActions(int action) {
 			compareBags(bag1, bag2);
 			break;
 		case 2:
-			checkSubBag(bag1, bag2);
+			checkSubBag(bag1, bag2, el1, el2);
+			break;
 		case 3:
 			unionAllBag(bag1, bag2);
+			break;
 		default:
 			break;
 	}
+}
+
+bool checkInitBag(bool value) {
+	if (!value)
+	{
+		cout << "\n*** PLEASE INIT BAG TO CONTINUE. ***" << endl;
+		return false;
+	}
+	return true;
 }
 
 int main()
 {
 	myBag* bag;
 	int choice, item;
-
+	bool hasInitBag = false;
 	while (1)
 	{
 		cout << "\n---------------------" << endl;
@@ -300,39 +317,47 @@ int main()
 		{
 		case 1:
 			bag = initBag();
-			cout << "Initizised bag.";
+			hasInitBag = true;
+			cout << "WELCOME to your bag.";
 			break;
 		case 2:
+			if (!checkInitBag(hasInitBag)) break;
 			cout << "Enter value to be inserted: ";
 			cin >> item;
 			insert(&bag, item);
 			printBag(bag);
 			break;
 		case 3:
+			if (!checkInitBag(hasInitBag)) break;
 			cout << "Enter value to be deleted: ";
 			cin >> item;
 			deleteItem(&bag, item);
 			printBag(bag);
 			break;
 		case 4:
+			if (!checkInitBag(hasInitBag)) break;
 			cout << "Delete all bag.";
 			deleteAll(&bag);
 			printBag(bag);
 			break;
 		case 5:
+			if (!checkInitBag(hasInitBag)) break;
 			cout << "Enter element to be counted: ";
 			cin >> item;
 			cout << item << " appears " << countItem(&bag, item) << " times." << endl;
 			break;
 		case 6:
+			if (!checkInitBag(hasInitBag)) break;
 			cout << "Check EQUAL of both Multiset/Bag: " << endl;
 			multipleBagActions(1);
 			break;
 		case 7:
-			cout << "Check SUB Mutiset/Bag:"<<endl;
+			if (!checkInitBag(hasInitBag)) break;
+			cout << "Check SUBSET OF Mutiset/Bag:"<<endl;
 			multipleBagActions(2);
 			break;
 		case 8:
+			if (!checkInitBag(hasInitBag)) break;
 			cout << "UNION Mutiset/Bag:" << endl;
 			multipleBagActions(3);
 			break;
